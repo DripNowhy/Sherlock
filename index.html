@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Self-Correcting Reasoning in Vision-Language Models">
+  <meta name="keywords" content="Sherlock, Sherlock">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Sherlock: Self-Correcting Reasoning in Vision-Language Models</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script> -->
+  <!-- <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+/Users/panlu/Library/Mobile Documents/com~apple~CloudDocs/ImageMath/visual-mathqa-server/data_final/images
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script> -->
+
+  <link rel="icon" href=".static/images/sherlock_logo.png">
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="stylesheet" href="./static/css/leaderboard.css">
+
+  <!-- KaTeX CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <!-- KaTeX JS -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+  <!-- <link href="https://unpkg.com/tabulator-tables@5.5.2/dist/css/tabulator_bulma.min.css" rel="stylesheet">
+  <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.5.2/dist/js/tabulator.min.js"></script> -->
+  <script type="text/javascript" src="static/js/sort-table.js" defer></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/explorer-index.js"></script>
+  <script src="./static/js/question_card.js"></script>
+
+  <script src="./static/js/leaderboard_testmini.js"></script>  
+
+  <style>
+    .hero.is-primary {
+      background: linear-gradient(90deg, #e3f0ff 0%, #f6fbff 100%);
+    }
+    .custom-btn {
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 2em;
+      font-size: 1.25rem;
+      padding: 0.75em 1.8em;
+      margin-right: 18px;
+      margin-bottom: 10px;
+      display: inline-flex;
+      align-items: center;
+      transition: background 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .custom-btn:hover {
+      background: #222;
+      color: #fff;
+    }
+    .custom-btn .icon-emoji {
+      margin-right: 0.6em;
+      font-size: 1.3em;
+      display: flex;
+      align-items: center;
+    }
+    .section-title {
+      text-align: center;
+      margin: 3rem 0;
+      padding: 2rem 0;
+      background: linear-gradient(90deg, #f8f9fa 0%, #ffffff 100%);
+      border-radius: 8px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+    }
+    .section-title h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 1rem;
+      letter-spacing: -0.5px;
+    }
+    .section-title p {
+      font-size: 1.2rem;
+      color: #666;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    @media (max-width: 600px) {
+      .custom-btn {
+        font-size: 1rem;
+        padding: 0.6em 1.2em;
+        margin-right: 8px;
+      }
+      .section-title h1 {
+        font-size: 2rem;
+      }
+      .section-title p {
+        font-size: 1rem;
+      }
+    }
+
+    /* 案例展示部分样式 */
+    .case-container {
+      max-width: 1200px;
+      margin: 2em auto;
+      padding: 2em;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    
+    .question-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1em;
+      margin-bottom: 2em;
+    }
+    
+    .question-btn {
+      padding: 0.8em 1.5em;
+      background: #f8f9fa;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .question-btn:hover {
+      background: #e9ecef;
+      border-color: #dee2e6;
+    }
+    
+    .question-btn.active {
+      background: #3498db;
+      color: white;
+      border-color: #3498db;
+    }
+    
+    .answer-container {
+      margin: 2em 0;
+      padding: 2em 2.5em;
+      background: #fafdff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(52,152,219,0.10), 0 1.5px 4px rgba(44,62,80,0.06);
+      min-height: 180px;
+      border: 1.5px solid #e3eaf2;
+      transition: box-shadow 0.2s;
+    }
+    
+    .typing-text {
+      font-family: 'Courier New', monospace;
+      line-height: 1.6;
+      color: #222;
+      letter-spacing: 0.01em;
+      text-align: left;
+      word-break: break-word;
+      white-space: pre-wrap;
+      transition: color 0.2s;
+    }
+    
+    .correction-btn {
+      padding: 0.8em 2em;
+      background: #2ecc71;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      margin-top: 1em;
+    }
+    
+    .correction-btn:hover {
+      background: #27ae60;
+    }
+    
+    .correction-btn:disabled {
+      background: #95a5a6;
+      cursor: not-allowed;
+    }
+    
+    .correction-count {
+      margin-top: 1em;
+      color: #7f8c8d;
+      font-size: 0.9em;
+    }
+
+    .case-flex {
+      display: flex;
+      gap: 2em;
+      align-items: flex-start;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .case-image {
+      flex: 0 0 350px;
+      max-width: 350px;
+      min-width: 220px;
+      background: #f5f5f5;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 220px;
+    }
+    .case-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .case-question {
+      flex: 1 1 320px;
+      min-width: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .case-question .problem-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 1em;
+    }
+    .case-question .problem-desc {
+      font-size: 1.1em;
+      margin-bottom: 1em;
+    }
+    @media (max-width: 900px) {
+      .case-flex {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .case-image, .case-question {
+        max-width: 100%;
+        min-width: 0;
+      }
+    }
+    @media (max-width: 600px) {
+      .answer-container {
+        padding: 1.2em 0.7em;
+        min-height: 120px;
+      }
+      .typing-text {
+        font-size: 1rem;
+      }
+    }
+  </style>
+
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title is-bold">
+            <img src="static/images/sherlock_logo.png" style="width:2em;vertical-align: middle" alt="Logo"/>
+            <span class="sherlock" style="vertical-align: middle">Sherlock</span>
+            </h1>
+          <h2 class="subtitle is-3 publication-subtitle">
+            Self-Correcting Reasoning in Vision-Language Models
+            <!-- <br> -->
+            <!-- with GPT-4V, Bard, and Other Large Multimodal Models -->
+          </h2>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://dripnowhy.github.io/">Yi Ding</a><sup style="color:#c59b42;">1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://ruqizhang.github.io/">Ruqi Zhang</a><sup style="color:#c59b42;">1</sup>,
+            </span>
+            
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup style="color:#c59b42;">1</sup>Department of Computer Science, Purdue University, USA</span><br>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <!-- @PAN TODO: change links -->
+                <a href="https://dripnowhy.github.io/"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://dripnowhy.github.io/"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://dripnowhy.github.io/"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <span class="link-block">
+                <a href="https://dripnowhy.github.io/"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <!-- <i class="far fa-images"></i> -->
+                      <p style="font-size:18px">🤗</p>
+                      <!-- 🔗 -->
+                  </span>
+                  <span>Model</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://dripnowhy.github.io/"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <p style="font-size:18px">🌐</p>
+                  </span>
+                  <span>Twitter</span>
+                </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="margin-bottom: 2vh;margin-top: -6vh;">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">🔔 News</h2>
+        <!-- <div class="content has-text-justified">
+          <p>
+              <b>🔥[2025-05-xx] Our paper <a href="https://arxiv.org/abs/">Sherlock</a>, <a href="https://github.com/">Code</a>  and <a href="https://huggingface.co/collections/">Models</a> are out 🚀. </b>
+          </p>
+        </div> -->
+        <h2 class="title is-3">Introduction</h2>
+        <div class="content has-text-justified">
+          <p>
+            Reasoning Vision-Language Models (VLMs) have shown promising performance on complex multimodal tasks. However, they still face significant challenges: they are highly sensitive to reasoning errors, require large volumes of annotated data or accurate verifiers, and struggle to generalize beyond specific domains. To address these limitations, we explore self-correction as a strategy to enhance reasoning VLMs. We first conduct an in-depth analysis of reasoning VLMs' self-correction abilities and identify key gaps. Based on our findings, we introduce Sherlock, a self-correction and self-improvement training framework.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+</div>
+</section>
+
+<section class="section-title">
+  <div class="container">
+    <h1>Can Reasoning VLMs Self-Correct?</h1>
+    <p>We investigate the self-correction capabilities of reasoning VLMs through systematic analysis of step-wise and response-wise correction behaviors.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <div class="content has-text-centered">
+          <img src="static/images/self_correction.png" alt="algebraic reasoning" width="100%"/>
+          <p class="is-size-6" style="margin-top: 0.5em; color: #666; max-width: 900px; margin-left: auto; margin-right: auto;">
+            <strong>Figure 1:</strong> <strong>Left:</strong> Overview of experimental settings for self-correction analysis. 
+            <span style="color: #00bcd4;">Blue</span> block illustrates the Modified One Step process using 
+            <a href="https://arxiv.org/abs/2402.16746" target="_blank">Qwen2.5-7B-Instruct</a>, while 
+            <span style="color: #4caf50;">Green</span> block represents two correction strategies applied to direct generations: 
+            external critique-based correction and internal correction prompt. 
+            <strong>Right:</strong> Reasoning performance of 
+            <a href="https://arxiv.org/abs/2402.16746" target="_blank">LLaVA-CoT</a> and 
+            <a href="https://arxiv.org/abs/2402.16746" target="_blank">VL-Rethinker</a> under different settings, 
+            evaluated on 
+            <a href="https://arxiv.org/abs/2402.16746" target="_blank">MMStar</a> and 
+            <a href="https://arxiv.org/abs/2402.16746" target="_blank">MathVista</a>.
+          </p>
+        </div>
+        <h2 class="title is-3">Definition</h2>
+        <div class="content has-text-justified">
+          <p>
+            Reasoning VLMs explicitly generate step-by-step thoughts along with the final answer during inference. This process can be denoted as $(y_1, \cdots, y_n; a) \sim \pi(\cdot \vert x_{I\&T})$, where $y_i$ represents the $i$-th reasoning step, $a$ is the final answer, $\pi$ is the reasoning VLM, and $x_{I\&T}$ denotes the input image and text. For reasoning models, self-correction behavior can be implemented in two ways: <b>Step-wise correction</b> and <b>Response-wise correction</b>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Step-wise Self-correction</h2>
+        <p>
+          <b>Step-wise Correction</b>: The model reflects on its previous incorrect $i$-th step <em>within</em> a single thinking process and revises it to arrive at the final answer:
+        </p>
+        <div class="has-text-centered" style="margin: 1.5em 0;">
+          $$
+          (r, y_{i+1}, \cdots, y_n; a) = \pi(\cdot \vert x_{I\&T}; y_1, \cdots, y_{i}^*), r \in \{\text{"wait", "however", "check",} \cdots\}.
+          $$
+        </div>
+        <p>
+          Here, $y^*$ is the erroneous reasoning step, and $r$ is a reflection token indicating the model's intention to correct its previous reasoning.
+        </p>
+        <div class="content has-text-centered">
+          <img src="static/images/table1.png" alt="algebraic reasoning" width="60%"/>
+        </div>
+        <p>
+          Our experimental results reveal that once an error occurs in the reasoning trajectory, reasoning VLMs struggle to trigger self-reflection behaviors, such as producing expressions typically associated with "aha moments." Even among the examples where such moments do appear, only about half ultimately lead to a correct final answer.
+        </p>
+        <div class="content has-text-centered">
+          <img src="static/images/takeaway1.png" alt="algebraic reasoning" width="80%"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Response-wise Self-correction</h2>
+        <p>
+          <b>Response-wise Correction</b>: The model is prompted to revise and improve its entire generated response:
+        </p>
+        <div class="has-text-centered" style="margin: 1.5em 0;">
+          $$
+          (y_1^2,\cdots, y_n^2;a^2)=\pi(\cdot\vert x_{I\&T};y_1^1,\cdots,y_n^1,a^1;t),
+          $$
+        </div>
+        <p>
+          where $\{y^j_i, a^j\}$ denotes the $j$-th attempt and $t$ is an additional instruction guiding the model to perform correction.
+        </p>
+        <p>
+          The results in the right part of Figure 1 show that neither the correction prompt nor the external critiques effectively improve the reasoning trajectory. Moreover, we observe that, regardless of which critic model is used to provide feedback, the accuracy of the corrected responses tends to converge to a level similar to direct generation, showing little variation based on the quality of the critique.
+        </p>
+        <div class="content has-text-centered">
+          <img src="static/images/takeaway2.png" alt="algebraic reasoning" width="80%"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-title">
+  <div class="container">
+    <h1>Sherlock</h1>
+    <p>Self-enhanced reasoning and self-correction training framework.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <div class="content has-text-centered">
+          <img src="static/images/sherlock_pipeline.png" alt="algebraic reasoning" width="100%"/>
+          <p class="is-size-6" style="margin-top: 0.5em; color: #666; max-width: 900px; margin-left: auto; margin-right: auto;">
+            <strong>Figure 2:</strong> Training pipeline of <em>Sherlock</em>, including: 
+            <strong>Left:</strong> SFT cold-start stage, 
+            <strong>Middle:</strong> offline preference training, and 
+            <strong>Right:</strong> online iterative self-improvement. 
+            In the SFT and offline stages, we randomly sample 10k data with ground truth from the 100k 
+            <a href="https://arxiv.org/abs/2402.16746" target="_blank">LLaVA-CoT</a> dataset as supervision. 
+            During the online stage, each iteration samples only 5k unlabeled inputs, from which a self-constructed and 
+            self-labeled dataset is built using the selection rule illustrated in the <strong>Right</strong> part.
+          </p>
+        </div>
+        <div class="content has-text-centered">
+          <img src="static/images/takeaway3.png" alt="algebraic reasoning" width="80%"/>
+        </div>
+        <div class="content has-text-centered">
+          <img src="static/images/takeaway4.png" alt="algebraic reasoning" width="80%"/>
+        </div>
+        
+        
+            <h2 class="title is-3 has-text-centered">Example of Sherlock Self-Correction</h2>
+            <div class="case-container">
+              <div class="question-selector">
+                <button class="question-btn" data-question="1">Case 1</button>
+                <button class="question-btn" data-question="2">Case 2</button>
+                <button class="question-btn" data-question="3">Case 3</button>
+                <button class="question-btn" data-question="4">Case 4</button>
+              </div>
+              <div class="case-flex">
+                <div class="case-image" id="caseImage">
+                  <!-- 问题图片 -->
+                </div>
+                <div class="case-question">
+                  <div class="problem-title" id="problemTitle"></div>
+                  <div class="problem-desc" id="problemDesc"></div>
+                </div>
+              </div>
+              <button class="correction-btn" id="showAnswer">Show Initial Answer</button>
+              <button class="correction-btn" id="selfCorrect" style="display: none;">Self-Correct</button>
+              <div class="correction-count" id="correctionCount"></div>
+              <div class="answer-container">
+                <div class="typing-text" id="answerText"></div>
+              </div>
+            </div>
+
+
+        <h2 class="title is-3">Sherlock Performance</h2>
+        <div class="content has-text-justified">
+          <div class="content has-text-centered">
+            <img src="static/images/sherlock_performance.png" alt="algebraic reasoning" width="100%"/>
+          </div>
+          <div class="findings-container" style="max-width: 800px; margin: 2em auto; text-align: left;">
+            <div class="finding-item" style="margin-bottom: 1.5em; padding: 1em; background: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+              <h4 style="color: #2c3e50; font-size: 1.2em; margin-bottom: 0.5em;">
+                <span style="color: #3498db; font-weight: bold;">Conclusion:</span> Sherlock achieving best performance using the minimal annotation: only <b>20k randomly sampled</b> data from LLaVA-CoT.
+              </h4>
+            </div>
+          </div>
+
+          <div class="content has-text-centered">
+            <img src="static/images/self_correction_performance.png" alt="algebraic reasoning" width="100%"/>
+          </div>
+          <div class="findings-container" style="max-width: 800px; margin: 2em auto; text-align: left;">
+            <div class="finding-item" style="margin-bottom: 1.5em; padding: 1em; background: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+              <h4 style="color: #2c3e50; font-size: 1.2em; margin-bottom: 0.5em;">
+                <span style="color: #3498db; font-weight: bold;">Conclusion:</span> Sherlock furthure enhances performance via self-correction, better than other inference-time scaling strategy and without the need to deploy another models.
+              </h4>
+            </div>
+          </div>
+
+          <div class="content has-text-centered">
+            <img src="static/images/sherlock_ablation.png" alt="algebraic reasoning" width="100%"/>
+            <div class="findings-container" style="max-width: 800px; margin: 2em auto; text-align: left;">
+              <div class="finding-item" style="margin-bottom: 1.5em; padding: 1em; background: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <h4 style="color: #2c3e50; font-size: 1.2em; margin-bottom: 0.5em;">
+                  <span style="color: #3498db; font-weight: bold;">Finding 1:</span> Self-Correction and Reasoning are Not Orthogonal Capabilities
+                </h4>
+              </div>
+              <div class="finding-item" style="margin-bottom: 1.5em; padding: 1em; background: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <h4 style="color: #2c3e50; font-size: 1.2em; margin-bottom: 0.5em;">
+                  <span style="color: #3498db; font-weight: bold;">Finding 2:</span> Trajectory-Level Objective Yields Superior Self-Correction in Reasoning VLMs
+                </h4>
+              </div>
+              <div class="finding-item" style="margin-bottom: 1.5em; padding: 1em; background: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <h4 style="color: #2c3e50; font-size: 1.2em; margin-bottom: 0.5em;">
+                  <span style="color: #3498db; font-weight: bold;">Finding 3:</span> Dynamic $\beta$ Leads to Stable Training
+                </h4>
+              </div>
+            </div>
+          </div>
+          <div class="content has-text-centered">
+            <img src="static/images/scaling.png" alt="algebraic reasoning" width="50%"/>
+          </div>
+          <div class="findings-container" style="max-width: 800px; margin: 2em auto; text-align: left;">
+            <div class="finding-item" style="margin-bottom: 1.5em; padding: 1em; background: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+              <h4 style="color: #2c3e50; font-size: 1.2em; margin-bottom: 0.5em;">
+                <span style="color: #3498db; font-weight: bold;">Conclusion:</span> Sherlock can accelerate and enhance sequential self-correction performance by deploy another Verify model.
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+      <h2 class="title">Reference</h2>
+      If you find our work useful, please give us a free cite:
+      <pre><code>
+  
+      </code></pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+      <div class="columns is-centered">
+          <div class="column is-8">
+              <div class="content has-text-centered">
+                  <p>
+                      This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+                  </p>
+              </div>
+          </div>
+      </div>
+  </div>
+</footer>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "$", right: "$", display: false}
+        ]
+      });
+    });
+  </script>
+  
+  <script>
+    // 打字机效果函数
+    function typeWriter(text, element, minSpeed = 10, maxSpeed = 60) {
+      // 自动转义尖括号
+      text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      // 按单词、汉字、标点分token
+      const tokens = text.split(/(\s+|\n)/g);
+
+      let i = 0;
+      element.innerHTML = '';
+
+      function type() {
+        if (i < tokens.length) {
+          element.innerHTML += tokens[i];
+          i++;
+          const speed = Math.floor(Math.random() * (maxSpeed - minSpeed + 1)) + minSpeed;
+          setTimeout(type, speed);
+        }
+      }
+      type();
+    }
+
+    // 问题和答案数据（含图片和描述）
+    const questions = {
+      1: {
+        image: "static/images/case1.jpg",
+        title: "Problem:",
+        desc: `What color is the text in the image? <br>
+        
+        (A) White (B) Blue (C) Black (D) Grey`,
+        initial: `<SUMMARY> I will analyze the image to determine the color of the text by examining its appearance and comparing it to the given options. </SUMMARY>
+<CAPTION> The image is a slide titled 'The United Nations,' containing bullet points about the organization's formation and functions. The text is set against a blue background, and there is an image of a UN General Assembly meeting. </CAPTION>
+<REASONING> To determine the color of the text, I will look at its hue and brightness in contrast to the background. The text appears to be a lighter shade compared to the blue background, indicating it is a neutral color such as grey or white. Since it is not black, option C can be eliminated. Comparing it to the other options, white would be too bright, so it is likely grey. </REASONING>
+<CONCLUSION> D ✗ </CONCLUSION>`,
+        corrections: [
+          `<SUMMARY> I will analyze the image to determine the color of the text by examining its appearance and comparing it to the given options. </SUMMARY>
+<CAPTION> The image is a slide titled "The United Nations." It contains bullet points about the United Nations' formation and functions, with an accompanying image of a UN General Assembly meeting. The text is prominently displayed against a blue background. </CAPTION>
+<REASONING> To determine the text color, I will look at its contrast with the background. The text appears lighter than the blue background, suggesting it is a neutral color. Comparing it to the options provided, the closest match is grey, as it typically appears lighter than black or blue and not as bright as white. </REASONING>
+<CONCLUSION> D ✗ </CONCLUSION>`,
+          `<SUMMARY> To determine the color of the text in the image, I will carefully examine the image to identify and describe the text's color, then confirm it matches one of the given options. </SUMMARY>
+<CAPTION> The image is a slide titled "The United Nations," containing information about the organization's formation and functions. It includes a photograph of a meeting at the United Nations General Assembly. The text is presented in a clear, legible font against a gradient blue background. </CAPTION>
+<REASONING> Upon examining the image, the text stands out against the blue background. Its color appears to be a neutral shade that contrasts with the background, which is typically characteristic of the color gray. This observation aligns with the options provided, helping to identify the text color accurately. </REASONING>
+<CONCLUSION> D ✗ </CONCLUSION>`,
+          `<SUMMARY> To determine the color of the text in the image, I will carefully analyze the visual elements and identify the color of the text by comparing it to the background and other elements in the image. </SUMMARY>
+<CAPTION> The image is a slide titled "The United Nations," containing bullet points about the history and functions of the United Nations. The text is presented against a gradient blue background, with an image of a United Nations General Assembly session on the right. </CAPTION>
+<REASONING> The text on the slide is clearly visible and stands out against the blue background. By comparing the text's color to the surrounding blue hues, I can determine that the text is a different color. The text appears to be a neutral, light color that contrasts with the darker shades of blue in the background. </REASONING>
+<CONCLUSION> A ✓ </CONCLUSION>`
+        ]
+      },
+      2: {
+        image: "static/images/case2.jpg",
+        title: "Problem:",
+        desc: `What's the function of the demonstrated object? <br>
+        
+        (A) Cooking (B) Cook soup (C) Fry (D) steam`,
+        initial: `<SUMMARY> I will analyze the image to identify the object and its function, focusing on its features and context to determine the correct answer from the given options. </SUMMARY>
+<CAPTION> The image shows a stainless steel pan on a stovetop. Inside the pan, there is a piece of fish being cooked in water. There are also vegetables, such as corn and a tomato, visible nearby on the stove. </CAPTION>
+<REASONING> The object in the image is a stainless steel pan placed on a stove, containing water and a piece of fish. The presence of heat from the stove and the fish being submerged in water indicates that it is being used for cooking. Among the options provided, "Cooking" is the most general term that encompasses the activity taking place. While the pan could be used to fry, cook soup, or steam, the most straightforward answer based on the image alone is that it is being used for cooking in general. </REASONING>
+<CONCLUSION> (A) Cooking ✗ </CONCLUSION> `,
+        corrections: [`<SUMMARY> I will analyze the image to identify the object and its function, focusing on its features and context to determine the correct answer. </SUMMARY>
+<CAPTION> The image shows a stainless steel frying pan on a gas stove. Inside the pan, there is a piece of fish being cooked in oil or melted fat, indicating that it is being used for cooking. There are also some vegetables, such as corn and a tomato, visible nearby. </CAPTION>
+ <REASONING> The object in the image is a frying pan, which is typically used for frying foods. The presence of the fish being cooked in the pan suggests that it is being used for frying. The pan's shape and the cooking environment further support this conclusion, as frying usually involves cooking in a pan over direct heat. </REASONING>
+<CONCLUSION> (C) Fry ✓ </CONCLUSION>`, `<SUMMARY> I will analyze the image to identify the object and its function, then determine which option best describes its use based on its features and context. </SUMMARY>
+<CAPTION> The image shows a stainless steel pan on a stovetop, containing water with a piece of fish submerged. There are vegetables, such as corn and a tomato, nearby on the counter. </CAPTION>
+<REASONING> The object is a stainless steel pan placed on a stove, indicating it is designed for cooking. It contains water and a piece of fish, which suggests that it is being used to cook the fish. The presence of the stovetop and the way the fish is submerged in water further implies that the pan is being used for a cooking method that involves boiling or frying. Given the options, frying typically involves submerging food in hot oil or water and is consistent with the setup shown. </REASONING>
+<CONCLUSION> C ✓ </CONCLUSION>`, `<SUMMARY> I will analyze the image to identify the object and its function, using visual cues to determine the correct answer from the given options. </SUMMARY>
+<CAPTION> The image shows a stainless steel frying pan on a gas stove. Inside the pan, there is a piece of fish being cooked in oil or melted fat, indicating that it is being used for cooking. There are also some vegetables, such as corn and a tomato, visible in the background. </CAPTION>
+<REASONING> The object in the image is a frying pan, which is typically used for frying foods. The presence of the fish cooking in the pan with a visible layer of oil further supports this function. Frying involves cooking food in hot oil or fat, which matches the scenario depicted. Other options like cooking soup or steaming require different types of vessels, such as pots with a lid for steaming or larger pots for soup. </REASONING>
+<CONCLUSION> C ✓ </CONCLUSION>`]
+      },
+      3: {
+        image: "static/images/case3.jpg",
+        title: "Problem:",
+        desc: `Hint: Please answer the question and provide the correct option letter, e.g., A, B, C, D, at the end.<br>
+    
+        Question: Is it split in half?<br>
+    
+        Choices:<br>
+    
+        (A) Yes
+    (B) No`,
+        initial: `<SUMMARY> I will analyze the image to determine if the pizza is split in half by examining its shape and any visible cuts. I will then compare my findings with the given options to provide the correct answer. </SUMMARY>
+<CAPTION> The image shows a pizza on a white plate. The pizza has a thin crust and is topped with cheese and basil. It appears to have been cut into several slices, with two main cuts extending from the center towards the edge, suggesting it is divided into halves. </CAPTION>
+<REASONING> To determine if the pizza is split in half, I will look for clear cuts that divide the pizza into two main portions. The pizza has two prominent diagonal cuts starting from the center, meeting the edge and creating two large halves. Additional smaller cuts are also visible, but the primary division into two is clear. </REASONING>
+<CONCLUSION> A ✗ </CONCLUSION> `,
+        corrections: [`<SUMMARY> I will analyze the image to determine if the pizza is split in half by examining its cut pattern and describe my findings systematically to reach the correct conclusion. </SUMMARY>
+<CAPTION> The image shows a pizza on a white plate. The pizza has a thin crust and is topped with cheese and basil strips. It is cut into several slices, with two prominent cuts that divide it into halves. </CAPTION>
+<REASONING> To determine if the pizza is split in half, I will look at the number and pattern of the cuts. The pizza has two main cuts that run from the center to the edge, dividing it into two equal halves. There are additional smaller cuts, but the primary division is into two halves. </REASONING>
+<CONCLUSION> A ✗ </CONCLUSION>`, `<SUMMARY> I will analyze the image to determine if the pizza is split in half by examining the number of slices and their arrangement. I will then compare my findings with the given options to provide the correct answer. </SUMMARY>
+<CAPTION>} The image shows a pizza on a white plate. The pizza has a thin crust and is topped with cheese and basil. It appears to be cut into eight slices, arranged in a symmetrical pattern. </CAPTION>
+<REASONING>} To determine if the pizza is split in half, I will count the number of slices. If it has two large slices separated by a clear line down the middle, it would be considered split in half. However, the pizza is cut into eight slices, indicating it is not divided simply into two halves. The slices are evenly distributed across the pizza with no two large halves. </REASONING>
+<CONCLUSION> B ✓ </CONCLUSION>`, `<SUMMARY> I will analyze the image to determine if the pizza is split in half by examining the number of slices and their arrangement. I will follow a structured approach to reach the conclusion. </SUMMARY>
+<CAPTION> The image shows a pizza on a white plate. The pizza has a thin crust with a golden-brown appearance, topped with melted cheese and garnished with thin strips of green herbs. It is cut into eight slices, with four slices extending from the center towards the edge, forming a radial pattern. </CAPTION>
+<REASONING> To determine if the pizza is split in half, I will assess the number and arrangement of the slices. A pizza that is split in half would typically have two large halves separated by a clear line down the middle, with no other slices present. In this image, the pizza is cut into eight equal slices, arranged in a symmetrical pattern, but there are not two primary halves. Therefore, it is not split in half. </REASONING>
+<CONCLUSION> B ✓ </CONCLUSION>`]
+      },
+      4: {
+        image: "static/images/case4.jpg",
+        title: "Problem:",
+        desc: `Hint: Please answer the question requiring an integer answer and provide the final value, e.g., 1, 2, 3, at the end.<br>
+
+        Question: What is the age gap between these two people in image? (Unit: years)`,
+        initial: `<SUMMARY> I will analyze the image to identify any visible clues that indicate the age difference between the two individuals, such as differences in their attire, accessories, or any other visible signs that might suggest a generational or age gap. </SUMMARY>
+<CAPTION> The image shows a man and a woman dressed in traditional Thai military and royal attire, respectively. Both are adorned with medals and jewelry, suggesting a formal and ceremonial occasion. The woman's hairstyle and the style of their clothing further imply a historical context. </CAPTION>
+<REASONING> To determine the age gap, I will consider the difference in their roles and the style of their clothing. The man's military uniform and the woman's royal attire suggest they are in a position of authority or royalty. The woman's youthful appearance and the style of her clothing may indicate she is younger than the man, consistent with a couple where the man is older. Given the royal context, it is plausible that the woman is his consort or wife, which often involves an age gap in royal marriages. </REASONING>
+<CONCLUSION> 12 ✗ </CONCLUSION> `,
+        corrections: [`<SUMMARY> To determine the age gap between the two individuals in the image, I will analyze historical context and available information about their birth dates. I will then calculate the difference to provide the answer. </SUMMARY>
+<CAPTION> The image shows a man and a woman dressed in formal royal attire, both adorned with medals. The man is wearing a military uniform with epaulets, and the woman is in a formal, ornate dress. They are likely members of a royal family, given their attire and decorations. </CAPTION>
+<REASONING> The individuals are King Bhumibol Adulyadej and Queen Sirikit of Thailand. King Bhumibol was born on December 5, 1927, and Queen Sirikit was born on August 12, 1932. To find the age gap, subtract the queen's birth year from the king's birth year: 1927 - 1932 = 5 years. </REASONING>
+<CONCLUSION> 5 ✓  </CONCLUSION>`, `<SUMMARY> To solve the problem, I will analyze the image to identify the individuals and determine the age gap between them. I will use historical information about their birth dates to calculate the age difference. </SUMMARY>
+<CAPTION> The image shows a man and a woman dressed in formal royal attire, both adorned with medals. The man is wearing a military uniform, and the woman is in a matching ceremonial outfit. They are likely members of a royal family, given their clothing and decorations. </CAPTION>
+<REASONING> The individuals in the image are King Bhumibol Adulyadej and Queen Sirikit of Thailand. King Bhumibol was born on December 5, 1927, and Queen Sirikit was born on August 12, 1932. To find the age gap, subtract the queen's birth year from the king's birth year: 1927 - 1932 = 5 years. </REASONING>
+<CONCLUSION> 5 ✓`, `<SUMMARY> To determine the age gap between the two individuals in the image, I will analyze historical data about their birth dates and calculate the difference. </SUMMARY>
+<CAPTION> The image shows a man and a woman dressed in formal royal attire, both adorned with medals. They are likely members of a royal family, given their clothing and decorations. </CAPTION>
+<REASONING> The man is King Bhumibol Adulyadej, and the woman is Queen Sirikit of Thailand. King Bhumibol was born on December 5, 1927, and Queen Sirikit was born on August 12, 1932. To find the age gap, subtract the queen's birth year from the king's birth year: 1927 - 1932 = 5 years. </REASONING>
+<CONCLUSION> 5 ✓ </CONCLUSION>`]
+      }
+    };
+
+    // 初始化变量
+    let currentQuestion = null;
+    let correctionCount = 0;
+    const maxCorrections = 3;
+
+    // 获取DOM元素
+    const questionBtns = document.querySelectorAll('.question-btn');
+    const showAnswerBtn = document.getElementById('showAnswer');
+    const selfCorrectBtn = document.getElementById('selfCorrect');
+    const answerText = document.getElementById('answerText');
+    const correctionCountDiv = document.getElementById('correctionCount');
+    const caseImage = document.getElementById('caseImage');
+    const problemTitle = document.getElementById('problemTitle');
+    const problemDesc = document.getElementById('problemDesc');
+
+    // 问题选择事件
+    questionBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        questionBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentQuestion = btn.dataset.question;
+        correctionCount = 0;
+        showAnswerBtn.style.display = 'block';
+        selfCorrectBtn.style.display = 'none';
+        answerText.innerHTML = '';
+        correctionCountDiv.innerHTML = '';
+        // 展示图片和问题描述
+        caseImage.innerHTML = `<img src="${questions[currentQuestion].image}" alt="case image"/>`;
+        problemTitle.innerHTML = questions[currentQuestion].title;
+        problemDesc.innerHTML = questions[currentQuestion].desc;
+      });
+    });
+
+    // 默认选中第一个问题
+    questionBtns[0].click();
+
+    // 显示初始答案
+    showAnswerBtn.addEventListener('click', () => {
+      if (currentQuestion) {
+        typeWriter(questions[currentQuestion].initial, answerText);
+        showAnswerBtn.style.display = 'none';
+        selfCorrectBtn.style.display = 'block';
+        correctionCountDiv.innerHTML = 'Corrections: 0/3';
+      }
+    });
+
+    // 自我纠正
+    selfCorrectBtn.addEventListener('click', () => {
+      if (correctionCount < maxCorrections) {
+        correctionCount++;
+        typeWriter(questions[currentQuestion].corrections[correctionCount - 1], answerText);
+        correctionCountDiv.innerHTML = `Corrections: ${correctionCount}/${maxCorrections}`;
+        if (correctionCount === maxCorrections) {
+          selfCorrectBtn.disabled = true;
+        }
+      }
+    });
+  </script>
+  
+  </body>
+  </html>
