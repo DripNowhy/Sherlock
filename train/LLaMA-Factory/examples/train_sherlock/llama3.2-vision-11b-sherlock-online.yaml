@@ -1,0 +1,45 @@
+### model
+model_name_or_path: SHERLOCK_ITER_k-1_MODEL
+
+### method
+stage: dpo
+pref_beta: 0.1
+refine_beta: 0.025
+pref_loss : sr
+do_train: true
+do_eval: false
+finetuning_type: full
+deepspeed: examples/deepspeed/ds_z3_offload_config.json  # choices: [ds_z0_config.json, ds_z2_config.json, ds_z3_config.json]
+enable_liger_kernel: true
+
+### dataset
+dataset: sherlock_online_iter_k
+template: mllama
+cutoff_len: 4096
+max_samples: 1000000
+overwrite_cache: true
+preprocessing_num_workers: 16
+
+### output
+output_dir: SAVE_DIR
+logging_steps: 1
+save_strategy: epoch
+plot_loss: true
+overwrite_output_dir: true
+save_only_model: true
+seed: 42
+
+### train
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 4
+learning_rate: 5.0e-7
+num_train_epochs: 1.0
+lr_scheduler_type: cosine
+weight_decay: 0.00
+warmup_ratio: 0.00
+bf16: true
+ddp_timeout: 180000000
+
+swanlab_api_key: YOUR_API_KEY
+use_swanlab: true
+swanlab_run_name: llama3.2-vision-11b-sherlock-online-iter-k

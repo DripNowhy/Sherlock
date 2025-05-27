@@ -1,0 +1,1 @@
+torchrun --master_port 29646 --nproc-per-node=8 run.py --data HallusionBench MMStar MathVista_MINI AI2D_TEST_NO_MASK MME MMBench_TEST_EN_V11 MMMU_DEV_VAL MMVet --model Sherlock_SFT --work-dir YOUR_PATH --verbose

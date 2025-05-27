@@ -1,0 +1,51 @@
+{
+  "sherlock_sft": {
+    "file_name": "sherlock_sft.json",
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "conversations",
+      "images": "images"
+    }
+  },
+  "sherlock_offline": {
+    "file_name": "sherlock_offline.json",
+    "formatting": "sharegpt",
+    "ranking": true,
+    "columns": {
+      "messages": "conversations",
+      "chosen": "chosen",
+      "rejected": "rejected",
+      "images":"images",
+      "weights":"weights",
+      "prefix": "prefix"
+    }
+  },
+  "sherlock_online_iter1": {
+    "file_name": "sherlock_online_iter2.json",
+    "formatting": "sharegpt",
+    "ranking": true,
+    "columns": {
+      "messages": "conversations",
+      "chosen": "chosen",
+      "rejected": "rejected",
+      "images":"images",
+      "weights":"weights",
+      "prefix": "prefix",
+      "prefix_l": "prefix_l"
+    }
+  },
+  "sherlock_online_iter2": {
+    "file_name": "sherlock_online_iter2",
+    "formatting": "sharegpt",
+    "ranking": true,
+    "columns": {
+      "messages": "conversations",
+      "chosen": "chosen",
+      "rejected": "rejected",
+      "images":"images",
+      "weights":"weights",
+      "prefix": "prefix",
+      "prefix_l": "prefix_l"
+    }
+  }
+}
