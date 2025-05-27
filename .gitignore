@@ -39,3 +39,4 @@ ENV/
 ehthumbs.db
 Thumbs.db inference/VLMEvalKit/.env
 inference/VLMEvalKit/.env
+inference/VLMEvalKit/.env
