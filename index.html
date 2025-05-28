@@ -630,7 +630,7 @@
   
   <script>
     // 打字机效果函数
-    function typeWriter(text, element, minSpeed = 10, maxSpeed = 60) {
+    function typeWriter(text, element, minSpeed = 10, maxSpeed = 30) {
       // 自动转义尖括号
       text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
       // 按单词、汉字、标点分token
@@ -771,6 +771,7 @@
         correctionCount = 0;
         showAnswerBtn.style.display = 'block';
         selfCorrectBtn.style.display = 'none';
+        selfCorrectBtn.disabled = false;  // 重置按钮状态
         answerText.innerHTML = '';
         correctionCountDiv.innerHTML = '';
         // 展示图片和问题描述
