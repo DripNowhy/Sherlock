@@ -46,7 +46,7 @@ We propose Sherlock, the first framework to achieve intrinsic self-correction in
 -  **Base Model**
 
     Our Sherlock is built on Llama3.2-Vision-11B-Instruct model, you can download it [here](https://huggingface.co/meta-llama/Llama-3.2-11B-Vision-Instruct).
-    
+
 - **Training Data**
 
     In SFT and Offline stage, Sherlock randomly sampled 20k data with annotation from LLaVA-CoT in total. During the Online self-improvement stage, we randomly sampled only question and image without ground truth from LLaVA-CoT until it self-construct 5k preference data. You should first download [LLaVA-CoT dataset](https://huggingface.co/datasets/Xkev/LLaVA-CoT-100k).
@@ -57,7 +57,7 @@ We propose Sherlock, the first framework to achieve intrinsic self-correction in
 
 - **Demo**
 
-After download our Sherlock Iter2 weight, you can try the demo in this [file](https://github.com/DripNowhy/Sherlock/blob/main/inference/demo/inference.py).
+    After download our Sherlock Iter2 weight, you can try the demo in this [file](https://github.com/DripNowhy/Sherlock/blob/main/inference/demo/inference.py).
 
 ### Training
 Thanks to [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory) team, our training code is modified based on their framework!
