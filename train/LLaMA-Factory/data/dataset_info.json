@@ -1,4 +1,12 @@
 {
+  "sherlock_sft_r0_vlm": {
+    "file_name": "sherlock_sft_r0_vlm.json",
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "conversations",
+      "images": "images"
+    }
+  },
   "sherlock_sft": {
     "file_name": "sherlock_sft.json",
     "formatting": "sharegpt",
