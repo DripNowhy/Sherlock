@@ -6,12 +6,9 @@
 
 <h5 align="center"> If you find our project is helpful, please consider to give us a star ⭐ on GitHub!</h5>
 
-<h5 align=center>
-<a href='https://dripnowhy.github.io/Sherlock/'><img alt="Static Badge" src="https://img.shields.io/badge/Paper-arXiv-red"></a>
-<a href='https://dripnowhy.github.io/Sherlock/'><img src='https://img.shields.io/badge/Project-Page-green'></a>
-<a href='https://huggingface.co/collections/Tuwhy/sherlock-6835f46e450a48f228f7e80d'><img alt="Static Badge" src="https://img.shields.io/badge/%F0%9F%A4%97-Models-blue"></a>
-<a href='https://github.com/DripNowhy/Sherlock'><img alt="Static Badge" src="https://img.shields.io/badge/X-Twitter-white"></a>
-<a href='https://github.com/DripNowhy/Sherlock/blob/main/LICENSE'><img alt="Static Badge" src="https://img.shields.io/badge/Code License-Apache2.0-yellow"></a>
+<h5 align="center">
+
+[![Paper](https://img.shields.io/badge/paper-A42C25?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/) [![Hugging Face Collection](https://img.shields.io/badge/Sherlock_Collection-fcd022?style=for-the-badge&logo=huggingface&logoColor=000)](https://huggingface.co/collections/Tuwhy/sherlock-6835f46e450a48f228f7e80d) [![Twitter](https://img.shields.io/badge/Twitter-000000?style=for-the-badge&logo=x&logoColor=white)](https://huggingface.co/collections/Tuwhy/sherlock-6835f46e450a48f228f7e80d) [![GitHub Stars](https://img.shields.io/github/stars/DripNowhy/Sherlock?style=for-the-badge&logo=github&logoColor=white&label=Stars&color=000000)](https://github.com/DripNowhy/Sherlock)
 
 </h5>
 
