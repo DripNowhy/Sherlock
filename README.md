@@ -2,13 +2,13 @@
 <img src="assets/logo.png" width="80px">
 </div>
 
-<h2 align="center"> <a href="https://arxiv.org/abs/">Sherlock: Self-Correcting Reasoning in Vision-Language Models</a></h2>
+<h2 align="center"> <a href="http://arxiv.org/abs/2505.22651">Sherlock: Self-Correcting Reasoning in Vision-Language Models</a></h2>
 
 <h5 align="center"> If you find our project is helpful, please consider to give us a star ⭐ on GitHub!</h5>
 
 <h5 align="center">
 
-[![Paper](https://img.shields.io/badge/paper-A42C25?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/) [![Page](https://img.shields.io/badge/Project_page-2C7AC3?style=for-the-badge&logo=arcgis&logoColor=white)](https://dripnowhy.github.io/Sherlock/) [![Hugging Face Collection](https://img.shields.io/badge/Sherlock_Collection-fcd022?style=for-the-badge&logo=huggingface&logoColor=000)](https://huggingface.co/collections/Tuwhy/sherlock-6835f46e450a48f228f7e80d) [![GitHub Stars](https://img.shields.io/github/stars/DripNowhy/Sherlock?style=for-the-badge&logo=github&logoColor=white&label=Stars&color=000000)](https://github.com/DripNowhy/Sherlock)
+[![Paper](https://img.shields.io/badge/paper-A42C25?style=for-the-badge&logo=arxiv&logoColor=white)](http://arxiv.org/abs/2505.22651) [![Page](https://img.shields.io/badge/Project_page-2C7AC3?style=for-the-badge&logo=arcgis&logoColor=white)](https://dripnowhy.github.io/Sherlock/) [![Hugging Face Collection](https://img.shields.io/badge/Sherlock_Collection-fcd022?style=for-the-badge&logo=huggingface&logoColor=000)](https://huggingface.co/collections/Tuwhy/sherlock-6835f46e450a48f228f7e80d) [![GitHub Stars](https://img.shields.io/github/stars/DripNowhy/Sherlock?style=for-the-badge&logo=github&logoColor=white&label=Stars&color=000000)](https://github.com/DripNowhy/Sherlock)
 <!-- [![Twitter](https://img.shields.io/badge/Twitter-000000?style=for-the-badge&logo=x&logoColor=white)](https://huggingface.co/collections/Tuwhy/sherlock-6835f46e450a48f228f7e80d)  -->
 
 
