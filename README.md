@@ -16,8 +16,8 @@
 
 ## 📣 News
 
-<!-- - **[2025/5/29]** We've released our paper: [https://arxiv.org/abs/2411.10440](https://arxiv.org/abs/2411.10440) -->
-- **[2025/5/28]** We release the training, evaluation, and data construction code of Sherlock.
+- **[2025/5/29]** We've released our paper: [http://arxiv.org/abs/2505.22651](http://arxiv.org/abs/2505.22651).
+- **[2025/5/28]** We've released the training, evaluation, and data construction code of Sherlock.
 - **[2025/5/27]** We've released the [model weights of Sherlock](https://huggingface.co/collections/Tuwhy/sherlock-6835f46e450a48f228f7e80d).
 
 ## 🔥 Highlights
