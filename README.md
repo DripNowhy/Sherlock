@@ -72,5 +72,10 @@ Our project benefits from [LLaVA-CoT](https://github.com/PKU-YuanGroup/LLaVA-CoT
 ## 📃 Citation
 If you find our project is helpful, please cite our paper as
 ```
-To be continued
+@article{ding2025sherlock,
+  title={Sherlock: Self-Correcting Reasoning in Vision-Language Models},
+  author={Ding, Yi and Zhang, Ruqi},
+  journal={arXiv preprint arXiv:2505.22651},
+  year={2025}
+}
 ```
